@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using KModkit;
+using System.Text.RegularExpressions;
 using rnd = UnityEngine.Random;
 
 public class treasureHuntScript : MonoBehaviour 
@@ -411,4 +412,57 @@ public class treasureHuntScript : MonoBehaviour
 
 		return new KeyValuePair<int, int>();
 	}
+
+    //twitch plays
+    private bool charsAreValid(string s)
+    {
+        char[] valids = { 'u', 'd', 'l', 'r' };
+        for(int i = 0; i < s.Length; i++)
+        {
+            if (!valids.Contains(s.ElementAt(i)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} udlr [Move the specified directions in order; u = up, r = right, d = down, l = left] | !{0} screen [Presses the screen on the module]";
+    #pragma warning restore 414
+
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        if (Regex.IsMatch(command, @"^\s*screen\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) || Regex.IsMatch(command, @"^\s*submit\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            btns[4].OnInteract();
+            yield break;
+        }
+        command = command.Trim();
+        if (charsAreValid(command))
+        {
+            for(int i = 0; i < command.Length; i++)
+            {
+                if (command.ElementAt(i).Equals('u'))
+                {
+                    btns[0].OnInteract();
+                }
+                else if (command.ElementAt(i).Equals('d'))
+                {
+                    btns[1].OnInteract();
+                }
+                else if (command.ElementAt(i).Equals('r'))
+                {
+                    btns[2].OnInteract();
+                }
+                else if (command.ElementAt(i).Equals('l'))
+                {
+                    btns[3].OnInteract();
+                }
+                yield return new WaitForSeconds(0.2f);
+            }
+            yield break;
+        }
+    }
 }
