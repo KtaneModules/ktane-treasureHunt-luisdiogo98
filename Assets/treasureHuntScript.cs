@@ -442,6 +442,7 @@ public class treasureHuntScript : MonoBehaviour
         command = command.Trim();
         if (charsAreValid(command))
         {
+            yield return null;
             for(int i = 0; i < command.Length; i++)
             {
                 if (command.ElementAt(i).Equals('u'))
